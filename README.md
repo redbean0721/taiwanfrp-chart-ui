@@ -2,7 +2,7 @@
 
 🚀 一個基於 Vue 3 + TypeScript 的 TaiwanFRP 伺服器監控儀表板，提供即時的連線數據視覺化展示。
 
-![Version](https://img.shields.io/badge/version-0.0.1-blue.svg)
+![Version](https://img.shields.io/badge/version-0.0.2-blue.svg)
 ![Vue](https://img.shields.io/badge/Vue.js-3.5.18-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.5.0-orange.svg)
@@ -10,7 +10,7 @@
 ## ✨ 功能特色
 
 - 📊 **雙圓餅圖顯示** - 當前連線數與客戶端數量分佈
-- 🔄 **即時資料更新** - 每 30 秒自動重新整理
+- 🔄 **即時資料更新** - 使用 SSE (Server-Sent Events)，每 5 秒接收最新資料並覆蓋上一份
 - 🌓 **主題切換** - 支援明亮模式與深色模式
 - 📱 **響應式設計** - 完美適配桌面、平板、手機
 - 📈 **詳細統計** - 顯示各節點連線數與百分比

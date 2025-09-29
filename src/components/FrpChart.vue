@@ -7,7 +7,7 @@
         <span v-else>🌙</span>
     </button>
     </div>
-    <div class="version-info">UI Version: {{ version }}</div>
+    <div class="version-info"><a href="https://github.com/redbean0721/taiwanfrp-chart-ui" target="_blank">UI Version: {{ version }}</a></div>
     <div class="update-time">最後更新時間: {{ lastUpdateTime }}</div>
     <div v-if="loading" class="loading">載入中...</div>
     <div v-else-if="error" class="error">{{ error }}</div>
@@ -38,7 +38,7 @@
 
     <!-- 客戶端數量圖表 -->
     <div class="chart-section">
-        <h3>客戶端數量分佈</h3>
+        <h3>FRP 客戶端數量分佈</h3>
         <div class="chart-content">
             <div class="chart-area">
                 <Pie :data="clientChartData" :options="clientChartOptions" />
@@ -261,11 +261,11 @@ const clientChartData = computed(() => {
 
     servers.forEach(([serverName, serverArray]) => {
         if (serverArray.length > 0) {
-        const serverData = serverArray[0]
-        if (serverData.client_counts > 0) {
-            labels.push(serverName)
-            data.push(serverData.client_counts)
-        }
+            const serverData = serverArray[0]
+            if (serverData.client_counts > 0) {
+                labels.push(serverName)
+                data.push(serverData.client_counts)
+            }
         }
     })
 
@@ -310,12 +310,12 @@ const chartOptions = computed(() => ({
         borderWidth: 1,
         callbacks: {
             label: function(context: any) {
-            const label = context.label || ''
-            const value = context.raw || 0
-            const percentage = totalConnections.value > 0 
-                ? ((value / totalConnections.value) * 100).toFixed(1)
-                : '0'
-            return `${label}: ${value} 連線 (${percentage}%)`
+                const label = context.label || ''
+                const value = context.raw || 0
+                const percentage = totalConnections.value > 0 
+                    ? ((value / totalConnections.value) * 100).toFixed(1)
+                    : '0'
+                return `${label}: ${value} 連線 (${percentage}%)`
             }
         }
         }
@@ -328,33 +328,33 @@ const clientChartOptions = computed(() => ({
     maintainAspectRatio: false,
     plugins: {
         legend: {
-        position: 'bottom' as const,
-        labels: {
-            padding: 15,
-            usePointStyle: true,
-            color: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
-            boxWidth: 12,
-            font: {
-                size: 12
+            position: 'bottom' as const,
+            labels: {
+                padding: 15,
+                usePointStyle: true,
+                color: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
+                boxWidth: 12,
+                font: {
+                    size: 12
+                }
             }
-        }
         },
         tooltip: {
-        backgroundColor: isDarkMode.value ? '#374151' : '#ffffff',
-        titleColor: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
-        bodyColor: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
-        borderColor: isDarkMode.value ? '#4b5563' : '#e5e7eb',
-        borderWidth: 1,
-        callbacks: {
-            label: function(context: any) {
-            const label = context.label || ''
-            const value = context.raw || 0
-            const percentage = totalClients.value > 0 
-                ? ((value / totalClients.value) * 100).toFixed(1)
-                : '0'
-            return `${label}: ${value} 客戶端 (${percentage}%)`
+            backgroundColor: isDarkMode.value ? '#374151' : '#ffffff',
+            titleColor: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
+            bodyColor: isDarkMode.value ? '#e2e8f0' : '#2c3e50',
+            borderColor: isDarkMode.value ? '#4b5563' : '#e5e7eb',
+            borderWidth: 1,
+            callbacks: {
+                label: function(context: any) {
+                    const label = context.label || ''
+                    const value = context.raw || 0
+                    const percentage = totalClients.value > 0 
+                        ? ((value / totalClients.value) * 100).toFixed(1)
+                        : '0'
+                    return `${label}: ${value} 客戶端 (${percentage}%)`
+                }
             }
-        }
         }
     }
 }))
@@ -380,13 +380,39 @@ const fetchData = async () => {
     }
 }
 
+// 獲取 SSE 資料
+const initSSE = () => {
+    const eventSource = new EventSource("https://api.redbean0721.com/api/frp/monitor/query/sse?node=all&num=8")
+
+    eventSource.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data)
+            apiData.value = data    // 覆蓋上一份資料, 防止記憶體洩漏
+            lastUpdateTime.value = new Date().toLocaleTimeString("zh-TW")
+            loading.value = false
+        } catch (err) {
+            console.error("Error parsing SSE data:", err)
+            error.value = "解析 SSE 資料時發生錯誤"
+        }
+    }
+
+    eventSource.onerror = (err) => {
+        console.error("SSE error:", err)
+        error.value = "SSE 連線錯誤，正在重試..."
+        eventSource.close()
+        // 簡單自動重連機制
+        setTimeout(initSSE, 5000)
+    }
+}
+
 // 組件掛載時獲取資料
 onMounted(() => {
     loadTheme()
-    fetchData()
+    // fetchData()
+    initSSE()
 
     // 每 30 秒更新一次資料
-    setInterval(fetchData, 30000)
+    // setInterval(fetchData, 30000)
 })
 </script>
 

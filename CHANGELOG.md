@@ -5,6 +5,21 @@
 格式基於 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，
 並且此專案遵循 [語意化版本](https://semver.org/lang/zh-TW/)。
 
+## [0.0.2] - 2025-09-29
+
+### ⚡ 即時資料更新改進 (SSE 實作)
+
+#### 核心功能
+- 🔄 將資料更新方式從 30 秒輪詢改為 SSE (Server-Sent Events) 即時推送
+- ⏱ 每 5 秒自動接收最新資料，並覆蓋上一份，減少前端記憶體消耗
+- 🛠 自動重連機制：當 SSE 連線中斷時，自動嘗試重新建立連線
+
+#### 技術實作
+- FastAPI SSE API (`/frp/monitor/query/sse`)
+- Vue 3 + EventSource 接收 SSE
+- 移除原本的 fetch 輪詢機制
+
+
 ## [0.0.1] - 2025-09-09
 
 ### ✨ 初始版本發布 (Initial Release)
