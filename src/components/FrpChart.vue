@@ -360,7 +360,8 @@ const clientChartOptions = computed(() => ({
 }))
 
 // 獲取 API 資料
-const fetchData = async () => {
+// @ts-ignore
+const _fetchData = async () => {
     try {
         loading.value = true
         const response = await fetch('https://api.redbean0721.com/api/frp/monitor/query?node=all&num=8')
