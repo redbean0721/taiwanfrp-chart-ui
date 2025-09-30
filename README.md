@@ -2,7 +2,7 @@
 
 🚀 一個基於 Vue 3 + TypeScript 的 TaiwanFRP 伺服器監控儀表板，提供即時的連線數據視覺化展示。
 
-![Version](https://img.shields.io/badge/version-0.0.2-blue.svg)
+![Version](https://img.shields.io/badge/version-0.0.3-blue.svg)
 ![Vue](https://img.shields.io/badge/Vue.js-3.5.18-green.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)
 ![Chart.js](https://img.shields.io/badge/Chart.js-4.5.0-orange.svg)
