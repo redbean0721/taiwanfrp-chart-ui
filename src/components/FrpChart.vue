@@ -843,7 +843,7 @@ const formatTime = (timeString: string) => {
 
 // 獲取 SSE 資料
 const initSSE = () => {
-    const eventSource = new EventSource("https://api.redbean0721.com/api/frp/monitor/query/sse?node=all&num=8")
+    const eventSource = new EventSource("https://api.redbean0721.com/api/frp/monitor/query/sse")
 
     eventSource.onmessage = (event) => {
         try {
